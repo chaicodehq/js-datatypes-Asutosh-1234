@@ -29,4 +29,20 @@
  */
 export function formatChaiMenu(items) {
   // Your code here
+  if(items === null || items === undefined || items.length === 0 || !(Array.isArray(items)) ){
+    return "";
+  }
+  let ans = "";
+  let new_items = items.filter((ele) => ele.name != "" && ele.price >= 0)
+  for(let i = 0;i<new_items.length;i++){
+
+    if(new_items[i].price === 0 || new_items[i].name === "" || new_items[i].price <= 0){
+      continue
+    }
+    if(i != 0){
+      ans = ans + " | ";
+    }
+    ans = ans + `${new_items[i].name.toUpperCase()} - Rs.${new_items[i].price}`
+  }
+  return ans;
 }

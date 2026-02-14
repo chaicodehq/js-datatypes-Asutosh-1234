@@ -63,4 +63,84 @@
  */
 export function validateForm(formData) {
   // Your code here
+  const errors = {};
+
+  if (
+    typeof formData.name !== "string" ||
+    formData.name.trim().length < 2 ||
+    formData.name.trim().length > 50
+  ) {
+    errors.name = "Name must be 2-50 characters";
+  }
+
+  if (typeof formData.email !== "string") {
+    errors.email = "Invalid email format";
+  } else {
+    const email = formData.email;
+    const atIndex = email.indexOf("@");
+    const lastAtIndex = email.lastIndexOf("@");
+    const dotAfterAt = email.indexOf(".", atIndex + 1);
+
+    if (
+      atIndex === -1 ||
+      atIndex !== lastAtIndex || 
+      dotAfterAt === -1 ||
+      atIndex === 0 ||
+      dotAfterAt < atIndex
+    ) {
+      errors.email = "Invalid email format";
+    }
+  }
+
+  if (typeof formData.phone !== "string" || formData.phone.length !== 10) {
+    errors.phone = "Invalid Indian phone number";
+  } else {
+    const phone = formData.phone;
+    const validStart = ["6", "7", "8", "9"].includes(phone[0]);
+    const allDigits = phone.split("").every(ch => ch >= "0" && ch <= "9");
+
+    if (!validStart || !allDigits) {
+      errors.phone = "Invalid Indian phone number";
+    }
+  }
+
+  let age = formData.age;
+
+  if (typeof age === "string") {
+    age = parseInt(age);
+  }
+
+  if (
+    typeof age !== "number" ||
+    isNaN(age) ||
+    !Number.isInteger(age) ||
+    age < 16 ||
+    age > 100
+  ) {
+    errors.age = "Age must be an integer between 16 and 100";
+  }
+
+  if (
+    typeof formData.pincode !== "string" ||
+    formData.pincode.length !== 6 ||
+    formData.pincode.startsWith("0") ||
+    !formData.pincode.split("").every(ch => ch >= "0" && ch <= "9")
+  ) {
+    errors.pincode = "Invalid Indian pincode";
+  }
+
+  const state = formData?.state ?? "";
+
+  if (typeof state !== "string" || state.trim().length === 0) {
+    errors.state = "State is required";
+  }
+
+  if (!Boolean(formData.agreeTerms)) {
+    errors.agreeTerms = "Must agree to terms";
+  }
+
+  // Final Result
+  const isValid = Object.keys(errors).length === 0;
+
+  return { isValid, errors };
 }

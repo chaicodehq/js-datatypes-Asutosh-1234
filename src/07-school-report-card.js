@@ -41,5 +41,64 @@
  *   // => { name: "Priya", totalMarks: 63, percentage: 31.5, grade: "F", ... }
  */
 export function generateReportCard(student) {
-  // Your code here
+  if (!student || typeof student !== "object") return null;
+
+  const { name, marks } = student;
+  if (!name || typeof marks !== "object" ) return null;
+  if (Object.keys(marks).length === 0) return null;
+
+
+  let passed = [];
+  let failed = [];
+  let total = 0;
+  let subjectCount = 0;
+
+  let highestSubject = null;
+  let lowestSubject = null;
+  let highestMark = -1;
+  let lowestMark = 101;
+
+  for (let [subject, score] of Object.entries(marks)) {
+    if (!subject || typeof score !== "number" || score <= 0 || score > 100) {
+      return null;
+    }
+
+    subjectCount++;
+    total += score;
+
+    if (score >= 40) passed.push(subject);
+    else failed.push(subject);
+
+    if (score > highestMark) {
+      highestMark = score;
+      highestSubject = subject;
+    }
+
+    if (score < lowestMark) {
+      lowestMark = score;
+      lowestSubject = subject;
+    }
+  }
+
+  const percentage = Number((total / subjectCount).toFixed(2));
+
+  let grade;
+  if (percentage >= 90) grade = "A+";
+  else if (percentage >= 80) grade = "A";
+  else if (percentage >= 70) grade = "B";
+  else if (percentage >= 60) grade = "C";
+  else if (percentage >= 40) grade = "D";
+  else grade = "F";
+
+  return {
+    name,
+    totalMarks: total,
+    percentage,
+    grade,
+    highestSubject,
+    lowestSubject,
+    passedSubjects: passed,
+    failedSubjects: failed,
+    subjectCount
+  };
 }
